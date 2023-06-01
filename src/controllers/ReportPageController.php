@@ -59,6 +59,7 @@ class ReportPageController extends Controller
      */
     public function actionView($id)
     {
+        $this->layout = 'bid_main';
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -158,5 +159,26 @@ class ReportPageController extends Controller
     private function flash($type, $message)
     {
         Yii::$app->getSession()->setFlash($type == 'error' ? 'danger' : $type, $message);
+    }
+
+    public function actionAdd()
+    {
+        $model = new ReportPage();
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->validate()) {
+                $model->save(false);
+                return $this->asJson([
+                    'success' => true,
+                    'msg' => Yii::t("app", 'Success')
+                ]);
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+        $this->performAjaxValidation($model);
+        return $this->renderAjax('_add', [
+            'model' => $model,
+        ]);
     }
 }
