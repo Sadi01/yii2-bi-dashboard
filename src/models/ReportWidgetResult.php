@@ -3,6 +3,7 @@
 namespace sadi01\bidashboard\models;
 
 use sadi01\bidashboard\behaviors\Jsonable;
+use sadi01\bidashboard\traits\CoreTrait;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -32,8 +33,11 @@ use yii2tech\ar\softdelete\SoftDeleteBehavior;
  */
 class ReportWidgetResult extends ActiveRecord
 {
+    use CoreTrait;
     const STATUS_ACTIVE = 1;
     const STATUS_DELETED = 0;
+    const FORMAT_NUMBER = 1;
+    const FORMAT_CURRENCY = 2;
 
     public $result;
 

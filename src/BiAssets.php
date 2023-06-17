@@ -27,6 +27,7 @@ class BiAssets extends AssetBundle
         'bidashboard/dist/js/sweetalert2.all.min.js',
         'bidashboard/dist/js/sweet-alert.init.js',
         'bidashboard/dist/js/custom.min.js?v=1.2',
+        'bidashboard/dist/js/jquery.repeater.js',
 
     ];
 

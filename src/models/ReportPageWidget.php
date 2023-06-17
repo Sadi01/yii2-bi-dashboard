@@ -30,6 +30,8 @@ class ReportPageWidget extends \yii\db\ActiveRecord
     const STATUS_ACTIVE = 1;
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 2;
+    const FORMAT_NUMBER = 1;
+    const FORMAT_CURRENCY = 2;
     /**
      * {@inheritdoc}
      */

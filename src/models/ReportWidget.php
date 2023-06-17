@@ -3,8 +3,11 @@
 namespace sadi01\bidashboard\models;
 
 use sadi01\bidashboard\behaviors\Jsonable;
+use sadi01\bidashboard\components\Pdate;
 use sadi01\bidashboard\models\ReportPageQuery;
 use sadi01\bidashboard\models\ReportWidgetResultQuery;
+use sadi01\bidashboard\traits\CoreTrait;
+
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -41,15 +44,17 @@ use yii2tech\ar\softdelete\SoftDeleteBehavior;
  */
 class ReportWidget extends ActiveRecord
 {
+    use CoreTrait;
+
     const STATUS_ACTIVE = 1;
     const STATUS_DELETED = 0;
-
     const RANGE_TYPE_DAILY = 1;
     const RANGE_TYPE_MONTHLY = 2;
     const VISIBILITY_PUBLIC = 1;
     const VISIBILITY_PRIVATE = 2;
 
     public $params;
+    public $outputColumn;
 
     /**
      * {@inheritdoc}
@@ -68,7 +73,7 @@ class ReportWidget extends ActiveRecord
         return [
             [['title', 'search_model_method', 'search_model_class', 'search_route', 'search_model_form_name', 'range_type'], 'required'],
             [['status', 'deleted_at', 'range_type', 'visibility', 'updated_at', 'created_at', 'updated_by', 'created_by'], 'integer'],
-            [['add_on', 'search_model_class', 'params'], 'safe'],
+            [['add_on', 'search_model_class', 'params', 'outputColumn'], 'safe'],
             [['title', 'search_model_method', 'search_model_run_result_view', 'search_route', 'search_model_form_name'], 'string', 'max' => 128],
             [['description', 'search_model_class'], 'string', 'max' => 255],
         ];
@@ -183,9 +188,113 @@ class ReportWidget extends ActiveRecord
                 'jsonAttributes' => [
                     'add_on' => [
                         'params',
+                        'outputColumn',
                     ],
                 ],
             ],
         ];
     }
+
+
+    /**
+     * @param $id
+     * @param $start_range
+     * @param $end_rage
+     * @return mixed
+     * @throws \Exception
+     */
+    public function runWidget($id, $start_range = null, $end_range = null)
+    {
+
+        $widget = $this;
+        /**@var $pDate Pdate */
+        $pDate = \Yii::$app->pdate;
+
+        if ($start_range and $end_range) {
+            if (gettype($start_range) != 'integer') {
+                if ($widget->range_type == $widget::RANGE_TYPE_DAILY) {
+                    $start_range = $pDate->jmktime('', '', '', $start_range['mon'], $start_range['day'], $start_range['year']);
+                    $end_range = $pDate->jmktime('', '', '', $end_range['mon'], $end_range['day'], $end_range['year']);
+                } else {
+                    $start_range = $this->getStartAndEndOfMonth($start_range['year'] . "/" . $start_range['mon'])['start'];
+                    $end_range = $this->getStartAndEndOfMonth($end_range['year'] . "/" . $end_range['mon'])['end'];
+                }
+            }
+        } else {
+            if ($widget->range_type == $widget::RANGE_TYPE_DAILY) {
+                $dateTemp = $this->getStartAndEndOfMonth();
+            } else {
+                $dateTemp = $this->getStartAndEndOfYear();
+            }
+            $start_range = $dateTemp['start'];
+            $end_range = $dateTemp['end'];
+        }
+
+        $modelQueryResults = $this->findSearchModelWidget($start_range, $end_range);
+
+        // -- create Report Widget Result
+        $reportWidgetResult = new ReportWidgetResult();
+        $reportWidgetResult->widget_id = $id;
+        $reportWidgetResult->start_range = $start_range;
+        $reportWidgetResult->end_range = $end_range;
+        $reportWidgetResult->run_action = Yii::$app->controller->action->id;
+        $reportWidgetResult->run_controller = Yii::$app->controller->id;
+        $reportWidgetResult->result = $modelQueryResults;
+        $reportWidgetResult->save();
+
+        return $reportWidgetResult;
+    }
+
+    public function findSearchModelWidget($startDate, $endDate)
+    {
+        $params = $this->params;
+        $searchModel = new ($this->search_model_class);
+        $methodExists = method_exists($searchModel, $this->search_model_method);
+        if ($methodExists) {
+            $dataProvider = $searchModel->{$this->search_model_method}($params, $this->range_type, $startDate, $endDate);
+            $modelQueryResults = $dataProvider->query->asArray()->all();
+        } else {
+            $modelQueryResults = null;
+        }
+        return $modelQueryResults;
+    }
+
+    public function getModelRoute()
+    {
+        $modelRoute = "/" . $this->search_route . "?";
+        $modalRouteParams = "";
+        $params = json_decode($this->params, true);
+        foreach ($params as $key => $param) {
+            $modalRouteParams .= $this->search_model_form_name . "[" . $key . "]=" . $param . "&";
+        }
+        $modelRoute .= $modalRouteParams;
+        return $modelRoute;
+    }
+
+    public function lastResult($startRange = null, $endRange = null)
+    {
+        if (!$startRange || !$endRange) {
+            if ($this->range_type == $this::RANGE_TYPE_DAILY) {
+                $dateTemp = $this->getStartAndEndOfMonth();
+            } else {
+                $dateTemp = $this->getStartAndEndOfYear();
+            }
+            $start_range = $dateTemp['start'];
+            $end_range = $dateTemp['end'];
+        }
+
+        $runWidget = ReportWidgetResult::find()
+            ->where(['widget_id' => $this->id])
+            ->andWhere(['start_range' => $startRange])
+            ->andWhere(['end_range' => $endRange])
+            ->one();
+
+        if (!$runWidget) {
+            $runWidget = $this->runWidget($this->id, $startRange, $endRange);
+        }
+
+        return $runWidget;
+    }
+
+
 }

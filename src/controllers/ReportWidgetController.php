@@ -67,16 +67,8 @@ class ReportWidgetController extends Controller
     public function actionView($id, $method = null)
     {
         $model = $this->findModel($id);
-        $params = $model->params;
 
-//---- create url search
-        $modelRoute = "/" . $model->search_route . "?";
-        $modalRouteParams = "";
-        foreach ($params as $key => $param) {
-            $modalRouteParams .= $model->search_model_form_name . "[" . $key . "]=" . $param . "&";
-        }
-        $modelRoute .= $modalRouteParams;
-//---- end
+        $modelRoute = $model->getModelRoute();
 
         $runWidget = ReportWidgetResult::find()
             ->where(['widget_id' => $model->id])
@@ -84,7 +76,7 @@ class ReportWidgetController extends Controller
             ->one();
 
         if (!$runWidget || $method == 'new') {
-            $runWidget = $this->runWidget($id, null, null);
+            $runWidget = $model->runWidget($id, null, null);
         }
 
         return $this->render('view', [
@@ -99,19 +91,27 @@ class ReportWidgetController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate($searchModelClass=null,
+                                 $searchModelMethod=null,
+                                 $searchModelRunResultView=null,
+                                 $search_route=null,
+                                 $search_model_form_name=null,
+                                 $queryParams=null,$output_column=null)
     {
+
         $model = new ReportWidget();
         $model->loadDefaultValues();
-
-        $searchModelClass = $this->request->get('searchModelClass', null);
-        $searchModelMethod = $this->request->get('searchModelMethod', null);
-        $searchModelRunResultView = $this->request->get('searchModelRunResultView', null);
-        $search_route = $this->request->get('search_route', null);
-        $search_model_form_name = $this->request->get('search_model_form_name', null);
-        $queryParams = $this->request->get('queryParams', null);
-
         if ($this->request->isPost) {
+            $model->search_model_method = $searchModelMethod;
+            $model->search_route = $search_route;
+            $model->search_model_class = $searchModelClass;
+            $model->search_model_form_name = $search_model_form_name;
+            $model->search_model_run_result_view = $searchModelRunResultView;
+            $model->params = $queryParams;
+
+            $output_column = $this->request->post('output_column',null);
+            $model->outputColumn = json_encode(array_filter($output_column, fn($value) => array_filter($value)));
+
             if ($model->load($this->request->post()) && $model->validate()) {
                 $model->save(false);
                 return $this->asJson([
@@ -131,12 +131,8 @@ class ReportWidgetController extends Controller
 
         return $this->renderAjax('create', [
             'model' => $model,
-            'searchModelClass' => $searchModelClass,
-            'searchModelMethod' => $searchModelMethod,
-            'searchModelRunResultView' => $searchModelRunResultView,
-            'search_route' => $search_route,
-            'search_model_form_name' => $search_model_form_name,
             'queryParams' => $queryParams,
+            'output_column' => $output_column,
         ]);
     }
 
@@ -201,65 +197,4 @@ class ReportWidgetController extends Controller
         ]);
     }
 
-    /**
-     * @param $id
-     * @param $start_range
-     * @param $end_rage
-     * @return mixed
-     * @throws \Exception
-     */
-    public function runWidget($id, $start_range = null, $end_range = null)
-    {
-        $widget = $this->findModel($id);
-        /**@var $pDate Pdate */
-        $pDate = \Yii::$app->pdate;
-
-        if ($start_range and $end_range) {
-            if ($widget->range_type == $widget::RANGE_TYPE_DAILY) {
-                $start_range = $pDate->jmktime('', '', '', $start_range['mon'], $start_range['day'], $start_range['year']);
-                $end_range = $pDate->jmktime('', '', '', $end_range['mon'], $end_range['day'], $end_range['year']);
-            } else {
-                $start_range = $this->getStartAndEndOfMonth($start_range['year'] . "/" . $start_range['mon'])['start'];
-                $end_range = $this->getStartAndEndOfMonth($end_range['year'] . "/" . $end_range['mon'])['end'];
-            }
-        } else {
-            if ($widget->range_type == $widget::RANGE_TYPE_DAILY) {
-                $dateTemp = $this->getStartAndEndOfMonth();
-            } else {
-                $dateTemp = $this->getStartAndEndOfYear();
-            }
-            $start_range = $dateTemp['start'];
-            $end_range = $dateTemp['end'];
-        }
-
-        $modelQueryResults = $this->findSearchModelWidget($widget, $start_range, $end_range);
-
-        // -- create Report Widget Result
-        $reportWidgetResult = new ReportWidgetResult();
-        $reportWidgetResult->widget_id = $id;
-        $reportWidgetResult->status = 10;
-        $reportWidgetResult->start_range = $start_range;
-        $reportWidgetResult->end_range = $end_range;
-        $reportWidgetResult->run_action = Yii::$app->controller->action->id;
-        $reportWidgetResult->run_controller = Yii::$app->controller->id;
-        $reportWidgetResult->result = $modelQueryResults;
-        $reportWidgetResult->save();
-
-        return $reportWidgetResult;
-    }
-
-    public function findSearchModelWidget($model, $startDate, $endDate)
-    {
-        $params = $model->add_on['params'];
-        $searchModel = new ($model->search_model_class);
-        $methodExists = method_exists($searchModel, 'search');
-        if ($methodExists) {
-            $dataProvider = $searchModel->{$model->search_model_method}($params, $model->range_type, $startDate, $endDate);
-            $modelQueryResults = array_values($dataProvider->query->asArray()->all());
-        } else {
-            $modelQueryResults = null;
-        }
-
-        return $modelQueryResults;
-    }
 }

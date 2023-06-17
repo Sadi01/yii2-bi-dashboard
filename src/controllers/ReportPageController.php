@@ -6,12 +6,15 @@ use sadi01\bidashboard\components\jdate;
 use sadi01\bidashboard\models\ReportPage;
 use sadi01\bidashboard\models\ReportPageSearch;
 use sadi01\bidashboard\models\ReportPageWidget;
+use sadi01\bidashboard\models\ReportWidget;
 use sadi01\bidashboard\traits\AjaxValidationTrait;
+use sadi01\bidashboard\traits\CoreTrait;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * ReportPageController implements the CRUD actions for ReportPage model.
@@ -19,7 +22,9 @@ use yii\web\NotFoundHttpException;
 class ReportPageController extends Controller
 {
     use AjaxValidationTrait;
+    use CoreTrait;
 
+    public $enableCsrfValidation = false;
     public $layout = 'bid_main';
 
     /**
@@ -78,18 +83,25 @@ class ReportPageController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->range_type) {
-            return $this->render('view', [
-                'model' => $model,
-                'widgets' => $model->reportPageWidgets,
-            ]);
-        } else {
-            return $this->render('monthly', [
-                'model' => $model,
-                'widgets' => $model->reportPageWidgets,
-            ]);
+        if ($model->range_type == $model::RANGE_DAY){
+            $date_array = $this->getStartAndEndOfMonth();
+        }else{
+            $date_array = $this->getStartAndEndOfYear();
         }
+        $startRange = $date_array['start'];
+        $endRange = $date_array['end'];
+        if ($model->range_type == $model::RANGE_DAY){
+            $rangeDateNumber = count($this->getCurrentMonthDays());
+        }else{
+            $rangeDateNumber  = 12;
+        }
+        return $this->render('view', [
+            'model' => $model,
+            'pageWidgets' => $model->reportPageWidgets,
+            'startRange' => $startRange,
+            'endRange' => $endRange,
+            'rangeDateNumber' => $rangeDateNumber,
+        ]);
     }
 
     /**
@@ -206,14 +218,39 @@ class ReportPageController extends Controller
         }
 
         $this->performAjaxValidation($model);
+        $widgets = ReportWidget::find()->where(['range_type' => $page->range_type])->all();
         return $this->renderAjax('_add', [
             'model' => $model,
-            'page' => $page
+            'page' => $page,
+            'widgets' => $widgets,
         ]);
     }
 
     private function flash($type, $message)
     {
         Yii::$app->getSession()->setFlash($type == 'error' ? 'danger' : $type, $message);
+    }
+
+    /** @var $widget ReportWidget */
+    public function actionGetwidgetcolumn(){
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            if ($parents != null) {
+                $widget_id = $parents[0];
+                $widget = ReportWidget::findOne(['id' => $widget_id]);
+                if (!$widget){
+                    return ['output'=>[], 'selected'=>''];
+                }
+                $outputColumns = json_decode($widget->outputColumn);
+                foreach ($outputColumns as $item){
+                    $out[] = ['id'=>$item->column_name, 'name'=>$item->column_title];
+                }
+                return ['output'=>$out, 'selected'=>''];
+            }
+        }
+        return ['output'=>'', 'selected'=>''];
     }
 }

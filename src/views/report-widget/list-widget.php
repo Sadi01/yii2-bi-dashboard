@@ -5,10 +5,13 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\web\View;
+use sadi01\bidashboard\models\search\ReportWidgetSearch;
+use yii\data\ActiveDataProvider;
 
-/** @var yii\web\View $this */
-/** @var sadi01\bidashboard\models\search\ReportWidgetSearch $searchModel */
-/** @var yii\data\ActiveDataProvider $dataProvider */
+/** @var View $this */
+/** @var ReportWidgetSearch $searchModel */
+/** @var ActiveDataProvider $dataProvider */
 
 $this->title = Yii::t('biDashboard', 'Report Widgets');
 $this->params['breadcrumbs'][] = $this->title;

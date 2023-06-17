@@ -15,6 +15,8 @@ class ReportModalWidget extends Widget
     public $searchModelMethod;
     public $searchRoute;
     public $searchModelFormName;
+    public $searchModelRunResultView;
+    public $outputColumn;
 
     public function init()
     {
@@ -29,8 +31,10 @@ class ReportModalWidget extends Widget
             'queryParams' => $this->queryParams,
             'searchModel' => $this->searchModel,
             'searchModelMethod' => $this->searchModelMethod,
+            'searchModelRunResultView' => $this->searchModelRunResultView,
             'searchRoute' => $this->searchRoute,
             'searchModelFormName' => $this->searchModelFormName,
+            'outputColumn' => $this->outputColumn,
         ]);
     }
 }

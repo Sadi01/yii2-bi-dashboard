@@ -36,7 +36,7 @@ class ReportPage extends ActiveRecord
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 2;
     const RANGE_DAY = 1;
-    const RANGE_MONTH = 0;
+    const RANGE_MONTH = 2;
 
     public static function tableName()
     {
@@ -72,6 +72,7 @@ class ReportPage extends ActiveRecord
             'deleted_at' => Yii::t('biDashboard', 'Deleted At'),
             'updated_by' => Yii::t('biDashboard', 'Updated By'),
             'created_by' => Yii::t('biDashboard', 'Created By'),
+            'report_widget_field_format' => Yii::t('biDashboard', 'Report Widget Field Format'),
         ];
     }
 

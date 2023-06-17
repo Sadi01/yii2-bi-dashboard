@@ -66,4 +66,8 @@ return [
     'Select Status' => 'انتخاب وضعیت',
     'Select RANGE' => 'انتخاب دوره',
 
+    'Report Widget Field Format' => 'نوع نمایش فیلد',
+    'Number' => 'عدد',
+    'Curency' => 'مبلغ',
+
 ];

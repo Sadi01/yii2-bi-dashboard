@@ -39,10 +39,11 @@ $this->title = 'Bi dashboard widget';
             '/bidashboard/report-widget/create',
             'searchModelClass' => $searchModel::class,
             'searchModelMethod' => $searchModelMethod,
-            'searchModelRunResultView' => '---',
+            'searchModelRunResultView' => $searchModelRunResultView,
             'search_route' => $searchRoute,
             'search_model_form_name' => $searchModelFormName,
             'queryParams' => json_encode($queryParams),
+            'output_column' => json_encode($outputColumn),
         ]),
         'data-handle-form-submit' => 1
     ]) ?>
