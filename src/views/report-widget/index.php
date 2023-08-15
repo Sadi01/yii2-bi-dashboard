@@ -27,6 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </a>
                     </h4>
                 </div>
+
                 <div class="card-body">
                     <div id="collapseSearch" class="panel-collapse collapse" aria-expanded="false">
                         <?php echo $this->render('_search', ['model' => $searchModel]); ?>
