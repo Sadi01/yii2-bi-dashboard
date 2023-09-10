@@ -22,4 +22,12 @@ class Module extends \yii\base\Module
      */
     const MODULE = "bidashboard";
     public $layout="bid_main";
+
+    public function __construct($id, $parent = null, $config = [])
+    {
+        parent::__construct($id, $parent, $config);
+        if (array_key_exists('view_path', $this->params)) {
+            $this->setViewPath($this->params['view_path']);
+        }
+    }
 }
