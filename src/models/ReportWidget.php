@@ -266,7 +266,13 @@ class ReportWidget extends ActiveRecord
         $modelRoute = "/" . $this->search_route . "?";
         $modalRouteParams = "";
         foreach ($this->params as $key => $param) {
-            $modalRouteParams .= $this->search_model_form_name . "[" . $key . "]=" . $param . "&";
+            if (is_array($param)) {
+                foreach ($param as $each) {
+                    $modalRouteParams .= $this->search_model_form_name . "[" . $key . "][]=" . $each . "&";
+                }
+            } else {
+                $modalRouteParams .= $this->search_model_form_name . "[" . $key . "]=" . $param . "&";
+            }
         }
         $modelRoute .= $modalRouteParams;
         return $modelRoute;
