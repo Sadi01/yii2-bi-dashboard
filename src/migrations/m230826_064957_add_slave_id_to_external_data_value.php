@@ -15,7 +15,7 @@ class m230826_064957_add_slave_id_to_external_data_value extends Migration
     }
     public function safeUp()
     {
-        $this->addColumn('{{%external_data_value}}', 'slave_id', $this->tinyInteger()->unsigned()->notNull()->after('id'));
+        $this->addColumn('{{%external_data_value}}', 'slave_id', $this->Integer()->unsigned()->notNull()->after('id'));
         $this->alterColumn('{{%external_data_value}}', 'id', $this->integer());
         $this->dropPrimaryKey('PRIMARYKEY', '{{%external_data_value}}');
         $this->addPrimaryKey('PRIMARYKEY', '{{%external_data_value}}', ['id', 'slave_id']);

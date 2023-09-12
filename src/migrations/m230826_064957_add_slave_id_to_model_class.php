@@ -15,7 +15,7 @@ class m230826_064957_add_slave_id_to_model_class extends Migration
     }
     public function safeUp()
     {
-        $this->addColumn('{{%report_model_class}}', 'slave_id', $this->tinyInteger()->unsigned()->notNull()->after('id'));
+        $this->addColumn('{{%report_model_class}}', 'slave_id', $this->Integer()->unsigned()->notNull()->after('id'));
         $this->alterColumn('{{%report_model_class}}', 'id', $this->integer());
         $this->dropPrimaryKey('PRIMARYKEY', '{{%report_model_class}}');
         $this->addPrimaryKey('PRIMARYKEY', '{{%report_model_class}}', ['id', 'slave_id']);
