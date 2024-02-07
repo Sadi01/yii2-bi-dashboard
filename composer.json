@@ -44,7 +44,8 @@
     "kartik-v/yii2-widget-select2": "^2.1.4",
     "kartik-v/yii2-widget-depdrop": "@dev",
     "miloschuman/yii2-highcharts-widget": "^10.0",
-    "sadi01/yii2-daterangepicker": "*"
+    "sadi01/yii2-daterangepicker": "*",
+    "wbraganca/yii2-dynamicform": "*"
   },
   "autoload": {
     "psr-4": { "sadi01\\bidashboard\\": "src" }

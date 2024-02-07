@@ -90,9 +90,7 @@ Or, Add migrations path in console application config:
 'controllerMap' => [
     'migrate' => [
         'class' => 'yii\console\controllers\MigrateController',
-        'migrationNamespaces' => [
-         
-        ],
+        'migrationNamespaces' => [],
         'migrationPath' => [
             '@vendor/sadi01/yii2-bi-dashboard/src/migrations',
             '@app/migrations'

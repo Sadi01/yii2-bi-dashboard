@@ -1,26 +1,25 @@
 <?php
 
-use sadi01\bidashboard\models\ReportPage;
+use sadi01\bidashboard\models\ReportBoxWidgets;
+use sadi01\bidashboard\models\ReportBox;
 use yii\helpers\Html;
 use yii\web\View;
 
+/** @var ReportBoxWidgets $modelsWidget */
+/** @var ReportBox $modelBox */
 /** @var View $this */
-/** @var ReportPage $model */
 
-$this->title = Yii::t('biDashboard', 'Create Report Page');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('biDashboard', 'Report Pages'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = Yii::t('biDashboard', 'update box widgets');
 ?>
 <div class="report-widget-create">
     <div class="page-content container-fluid text-left">
         <div class="work-report-index">
             <div class="panel-group m-bot20" id="accordion">
                 <div class="report-page-create">
-
                     <?= $this->render('_form', [
-                        'model' => $model,
+                        'modelBox' => $modelBox,
+                        'modelsWidget' => $modelsWidget,
                     ]) ?>
-
                 </div>
             </div>
         </div>

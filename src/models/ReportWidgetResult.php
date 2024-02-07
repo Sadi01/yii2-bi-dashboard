@@ -45,7 +45,7 @@ class ReportWidgetResult extends ActiveRecord
     const CHART_COLUMN = 'column';
     const CHART_PIE = 'pie';
     const CHART_AREA = 'area';
-    const CHART_WORD_CLOUD = 'word_cloud';
+    const CHART_WORD_CLOUD = 'wordcloud';
 
     public $result;
 

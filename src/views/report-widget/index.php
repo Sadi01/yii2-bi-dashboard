@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 'data-target' => '#modal-pjax-bi',
                                                 'data-url' => Url::to(['report-widget/view', 'id' => $model->id]),
                                                 'data-handle-form-submit' => 1,
-                                                'data-reload-pjax-container' => 'p-jax-report-widget'
+                                                'data-reload-pjax-container' => 'p-jax-report-widget',
                                             ]
                                         );
                                     },

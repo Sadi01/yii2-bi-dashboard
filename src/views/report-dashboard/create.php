@@ -1,14 +1,14 @@
 <?php
 
-use sadi01\bidashboard\models\ReportPage;
+use sadi01\bidashboard\models\ReportDashboard;
 use yii\helpers\Html;
 use yii\web\View;
 
+/** @var ReportDashboard $model */
 /** @var View $this */
-/** @var ReportPage $model */
 
-$this->title = Yii::t('biDashboard', 'Create Report Page');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('biDashboard', 'Report Pages'), 'url' => ['index']];
+$this->title = Yii::t('biDashboard', 'create dashboard');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('biDashboard', 'Dashboard'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="report-widget-create">

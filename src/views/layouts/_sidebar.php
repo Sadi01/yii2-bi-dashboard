@@ -41,6 +41,12 @@ $menu_items = [
         'icon' => '	fa fa-at',
         'url' => ['/bidashboard/report-model-class']
     ],
+    [
+        'group' => 'Dashboard',
+        'label' => Yii::t('biDashboard', 'Dashboard'),
+        'icon' => '	fas fa-table',
+        'url' => ['/bidashboard/report-dashboard']
+    ],
 ];
 ?>
     <aside class="left-sidebar">

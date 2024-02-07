@@ -2,7 +2,6 @@
 
 use sadi01\bidashboard\models\ReportModelClass;
 use sadi01\bidashboard\models\ReportWidget;
-use yii;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;

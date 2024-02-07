@@ -7,7 +7,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
-
 /** @var yii\web\View $this */
 /** @var \sadi01\bidashboard\models\SharingPageSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */

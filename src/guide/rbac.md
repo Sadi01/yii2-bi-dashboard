@@ -95,6 +95,35 @@ permission: ['BI/ReportModelClass/index']
 ### Action: view
 permission: ['BI/ReportModelClass/view']
 
+## Permissions for ReportDashboardController
+## Action:index
+permission: ['BI/ReportDashboard/index']
+## Action:view
+permission: ['BI/ReportDashboard/view']
+## Action:create
+permission: ['BI/ReportDashboard/create']
+## Action:update
+permission: ['BI/ReportDashboard/update']
+## Action:delete
+permission: ['BI/ReportDashboard/delete']
+
+## Permissions for ReportBoxController
+## Action:create
+permission: ['BI/ReportBox/create']
+## Action:update
+permission: ['BI/ReportBox/update']
+## Action:delete
+permission: ['BI/ReportBox/delete']
+
+## Permissions for ReportBoxWidgetController
+## Action:create
+permission: ['BI/ReportBoxWidget/create']
+## Action:update
+permission: ['BI/ReportBoxWidget/update']
+## Action:delete
+permission: ['BI/ReportBoxWidget/delete']
+
+
 This project document provides an overview of the Role-Based Access Control (RBAC) configuration for the controllers and
 their respective actions. The defined access rules ensure that only authorized users with specific roles can access and
 perform actions within the system. If you have any further questions or need assistance, please feel free to reach out

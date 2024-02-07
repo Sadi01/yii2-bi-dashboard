@@ -211,7 +211,7 @@ $pdate = Yii::$app->pdate;
                                             'data-reload-pjax-container' => 'p-jax-report-page-add',
                                             'data-pjax' => '0',
                                             'data-url' => Url::to(['/bidashboard/report-page-widget/delete', 'id_widget' => $pageWidget->widget->id, 'id_page' => $model->id]),
-                                            'class' => " p-jax-btn btn-sm text-danger fa-lg p-0",
+                                            'class' => "p-jax-btn btn-sm text-danger fa-lg p-0",
                                             'data-title' => Yii::t('yii', 'Delete'),
                                             'data-toggle' => 'tooltip',
                                         ]); ?>
@@ -275,7 +275,6 @@ $pdate = Yii::$app->pdate;
                                     echo '%' . abs($rateNumber);
                                 }
                                 echo '</td>';
-
                             }
                         }
                     }
@@ -287,4 +286,3 @@ $pdate = Yii::$app->pdate;
     </div>
 </div>
 <?php Pjax::end(); ?>
-</div>

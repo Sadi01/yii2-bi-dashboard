@@ -1,7 +1,6 @@
 <?php
 
 use sadi01\bidashboard\models\ExternalData;
-use Yii;
 use sadi01\bidashboard\widgets\grid\ActionColumn;
 use sadi01\bidashboard\widgets\grid\GridView;
 use yii\helpers\Html;

@@ -58,6 +58,9 @@ it does:
     - Purpose: Retrieve and manage available model widget classes for the bidashboard application.
     - Description: This path provides an organized list of model classes, showing their names and descriptions. Users can customize each model class with various options, preview how they will look with sample data, and create new samples. Existing widget instances can be edited. 
   Each item is created when creating a widget, if it does not already have a widget
+- `/bidashboard/report-dashboard`:
+    - Purpose: A dashboard to display the information of various widgets, both daily and monthly, and compare them with each other in the visual form of cards, charts and tables.
+    
 
 # Explain Different Part
 

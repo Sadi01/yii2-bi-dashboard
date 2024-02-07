@@ -65,4 +65,14 @@ class CoreHelper
     {
         return self::getYear();
     }
+
+    public static function getDay($time = null)
+    {
+        return Yii::$app->pdate->jdate('d', $time ?: time(), '', 'Asia/Tehran', 'en');
+    }
+
+    public static function getCurrentDay()
+    {
+        return self::getDay();
+    }
 }

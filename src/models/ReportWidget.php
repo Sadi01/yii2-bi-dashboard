@@ -58,6 +58,7 @@ class ReportWidget extends ActiveRecord
 
     public $params;
     public $outputColumn;
+    public $count_result;
 
     const SCENARIO_UPDATE = 'update';
 
@@ -316,6 +317,11 @@ class ReportWidget extends ActiveRecord
         return $reportWidgetResult;
     }
 
+    public static function getWidgetList($rangeType = null): array
+    {
+        return self::find()->where(['range_type' => $rangeType])->select(['title'])->indexBy('id')->column();
+    }
+
     public function canDelete()
     {
         return true;
@@ -359,8 +365,17 @@ class ReportWidget extends ActiveRecord
     {
         $data = [];
         if ($type == 'List') {
-            $data = ArrayHelper::map(ReportWidget::find()->where(['range_type' => $code])->all(), 'id', 'title');
+            $data = ArrayHelper::map(self::find()->where(['range_type' => $code])->all(), 'id', 'title');
             $code = null;
+        }
+        if ($type == 'AllWidgetsWithRangeType'){
+
+            $modelResult = self::find()->all();
+            $result = [];
+            foreach ($modelResult as $item) {
+                $result[$item->id] = $item->title . ' - ' . self::itemAlias('RangeTypes', $item->range_type);
+            }
+            return $result;
         }
         $_items = [
             'Status' => [
